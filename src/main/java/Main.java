@@ -6,7 +6,7 @@ public class Main {
 
         Scanner scanner = new Scanner(System.in);
 
-        ArrayList<Monster> monsterListe = MonsterData.getMonsterListe();
+        ArrayList<Monster> monsterListe = MonsterRepository.getAllMonsters();
 
 
         boolean programmLaueft = true;
@@ -64,8 +64,7 @@ public class Main {
                                 int monsterId = scanner.nextInt();
 
                                 Monster gefundenesMonster =
-                                        MonsterSearch.searchById(
-                                                monsterListe,
+                                        MonsterRepository.searchById(
                                                 monsterId
                                         );
 
@@ -94,8 +93,7 @@ public class Main {
                                         scanner.nextLine();
 
                                 Monster gefundenesMonsterName =
-                                        MonsterSearch.searchByName(
-                                                monsterListe,
+                                        MonsterRepository.searchByName(
                                                 monsterName
                                         );
                                 if (gefundenesMonsterName != null) {
@@ -165,8 +163,7 @@ public class Main {
                         }
 
                         ArrayList<Monster> ergebnisKategorie =
-                                MonsterSearch.searchByCategory(
-                                        monsterListe,
+                                MonsterRepository.searchByCategory(
                                         categoryId
                                 );
 
@@ -223,8 +220,7 @@ public class Main {
                         }
 
                         ArrayList<Monster> ergebnisElement =
-                                MonsterSearch.searchByElement(
-                                        monsterListe,
+                                MonsterRepository.searchByElement(
                                         elementId
                                 );
 
@@ -256,8 +252,10 @@ public class Main {
 
                     System.out.println("Alle Monster");
 
-                    for (Monster monster : monsterListe) {
+                    ArrayList<Monster> alleMonster =
+                            MonsterRepository.getAllMonsters();
 
+                    for (Monster monster : alleMonster) {
                         System.out.println(monster.getName());
                     }
 
@@ -291,8 +289,7 @@ public class Main {
                         }
 
                         ArrayList<Monster> ergebnisGeneration =
-                                MonsterSearch.searchByGeneration(
-                                        monsterListe,
+                                MonsterRepository.searchByGeneration(
                                         generationId
                                 );
 

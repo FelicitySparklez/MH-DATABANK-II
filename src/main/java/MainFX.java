@@ -99,7 +99,6 @@ public class MainFX extends Application {
             );
         }
 
-
         // =========================
         // MONSTER DETAILS
         // =========================
@@ -112,6 +111,35 @@ public class MainFX extends Application {
         );
 
         details.setWrapText(true);
+
+
+        // =========================
+        // SUCHFUNKTION
+        // =========================
+
+        suchenButton.setOnAction(event -> {
+
+            String suchbegriff = suchfeld.getText().trim();
+
+            if (suchbegriff.isEmpty()) {
+                return;
+            }
+
+            Monster gefunden =
+                    MonsterRepository.searchByName(suchbegriff);
+
+            if (gefunden != null) {
+
+                monsterListe.getSelectionModel()
+                        .select(gefunden.getName());
+
+            } else {
+
+                details.setText(
+                        "Kein Monster mit diesem Namen gefunden."
+                );
+            }
+        });
 
 
         // =========================
@@ -160,12 +188,39 @@ public class MainFX extends Application {
                                         .append("\n");
                             }
 
+
+                            text.append("\nRelated Monster:\n");
+
+                            if (monster.getRelatedMonsterIds().isEmpty()) {
+
+                                text.append("- Keine\n");
+
+                            } else {
+
+                                for (int relatedId : monster.getRelatedMonsterIds()) {
+
+                                    for (Monster relatedMonster : alleMonster) {
+
+                                        if (relatedMonster.getMonsterId() == relatedId) {
+
+                                            text.append("- ")
+                                                    .append(relatedMonster.getName())
+                                                    .append("\n");
+
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+
+
                             details.setText(text.toString());
 
                             break;
                         }
                     }
                 });
+
 
 
         // =========================

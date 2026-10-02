@@ -70,7 +70,7 @@ public class MonsterRepository {
                 name,
                 category_id
             FROM MONSTER
-            WHERE name = ?
+            WHERE LOWER(name) = LOWER(?)
             """;
 
         try (Connection connection = Database.connect();
@@ -116,6 +116,58 @@ public class MonsterRepository {
         }
 
         return null;
+    }
+
+    public static ArrayList<Monster> searchByNameContains(String name) {
+
+        ArrayList<Monster> monsterListe = new ArrayList<>();
+
+        String sql = """
+            SELECT monster_id, name, category_id
+            FROM MONSTER
+            WHERE LOWER(name) LIKE LOWER(?)
+            ORDER BY name
+            """;
+
+        try (Connection connection = Database.connect();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, "%" + name + "%");
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+
+                while (resultSet.next()) {
+
+                    int monsterId =
+                            resultSet.getInt("monster_id");
+
+                    String monsterName =
+                            resultSet.getString("name");
+
+                    int categoryId =
+                            resultSet.getInt("category_id");
+
+                    Monster monster = new Monster(
+                            monsterId,
+                            monsterName,
+                            categoryId,
+                            new int[]{}
+                    );
+
+                    loadMonsterDetails(
+                            connection,
+                            monster
+                    );
+
+                    monsterListe.add(monster);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return monsterListe;
     }
 
     public static java.util.ArrayList<Monster> searchByCategory(

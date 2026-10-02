@@ -99,7 +99,6 @@ public class MainFX extends Application {
             );
         }
 
-
         // =========================
         // MONSTER DETAILS
         // =========================
@@ -112,6 +111,59 @@ public class MainFX extends Application {
         );
 
         details.setWrapText(true);
+
+
+        // =========================
+        // LIVE-SUCHE
+        // =========================
+
+        suchfeld.textProperty().addListener(
+                (observable, alterText, neuerText) -> {
+
+                    String suchbegriff = neuerText.trim();
+
+                    monsterListe.getItems().clear();
+
+                    if (suchbegriff.isEmpty()) {
+
+                        for (Monster monster : alleMonster) {
+                            monsterListe.getItems().add(
+                                    monster.getName()
+                            );
+                        }
+
+                        details.setText(
+                                "Wähle ein Monster aus der Liste aus."
+                        );
+
+                        return;
+                    }
+
+                    ArrayList<Monster> suchErgebnisse =
+                            MonsterRepository.searchByNameContains(
+                                    suchbegriff
+                            );
+
+                    for (Monster monster : suchErgebnisse) {
+                        monsterListe.getItems().add(
+                                monster.getName()
+                        );
+                    }
+
+                    if (suchErgebnisse.isEmpty()) {
+
+                        details.setText(
+                                "Keine passenden Monster gefunden."
+                        );
+
+                    } else {
+
+                        details.setText(
+                                "Bitte ein Monster aus der Liste auswählen."
+                        );
+                    }
+                }
+        );
 
 
         // =========================
@@ -160,12 +212,39 @@ public class MainFX extends Application {
                                         .append("\n");
                             }
 
+
+                            text.append("\nRelated Monster:\n");
+
+                            if (monster.getRelatedMonsterIds().isEmpty()) {
+
+                                text.append("- Keine\n");
+
+                            } else {
+
+                                for (int relatedId : monster.getRelatedMonsterIds()) {
+
+                                    for (Monster relatedMonster : alleMonster) {
+
+                                        if (relatedMonster.getMonsterId() == relatedId) {
+
+                                            text.append("- ")
+                                                    .append(relatedMonster.getName())
+                                                    .append("\n");
+
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+
+
                             details.setText(text.toString());
 
                             break;
                         }
                     }
                 });
+
 
 
         // =========================

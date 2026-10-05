@@ -114,56 +114,32 @@ public class MainFX extends Application {
 
 
         // =========================
-        // LIVE-SUCHE
+        // SUCHFUNKTION
         // =========================
 
-        suchfeld.textProperty().addListener(
-                (observable, alterText, neuerText) -> {
+        suchenButton.setOnAction(event -> {
 
-                    String suchbegriff = neuerText.trim();
+            String suchbegriff = suchfeld.getText().trim();
 
-                    monsterListe.getItems().clear();
+            if (suchbegriff.isEmpty()) {
+                return;
+            }
 
-                    if (suchbegriff.isEmpty()) {
+            Monster gefunden =
+                    MonsterRepository.searchByName(suchbegriff);
 
-                        for (Monster monster : alleMonster) {
-                            monsterListe.getItems().add(
-                                    monster.getName()
-                            );
-                        }
+            if (gefunden != null) {
 
-                        details.setText(
-                                "Wähle ein Monster aus der Liste aus."
-                        );
+                monsterListe.getSelectionModel()
+                        .select(gefunden.getName());
 
-                        return;
-                    }
+            } else {
 
-                    ArrayList<Monster> suchErgebnisse =
-                            MonsterRepository.searchByNameContains(
-                                    suchbegriff
-                            );
-
-                    for (Monster monster : suchErgebnisse) {
-                        monsterListe.getItems().add(
-                                monster.getName()
-                        );
-                    }
-
-                    if (suchErgebnisse.isEmpty()) {
-
-                        details.setText(
-                                "Keine passenden Monster gefunden."
-                        );
-
-                    } else {
-
-                        details.setText(
-                                "Bitte ein Monster aus der Liste auswählen."
-                        );
-                    }
-                }
-        );
+                details.setText(
+                        "Kein Monster mit diesem Namen gefunden."
+                );
+            }
+        });
 
 
         // =========================

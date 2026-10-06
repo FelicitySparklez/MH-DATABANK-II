@@ -220,7 +220,7 @@ public class MainFX extends Application {
                         }
                     }
                 });
-        
+
 
         // =========================
         // LINKE SEITE
